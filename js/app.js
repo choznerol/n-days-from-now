@@ -14,7 +14,18 @@ const customBtn = document.getElementById("custom-add");
 const customList = document.getElementById("custom-list");
 const baseWeekday = document.getElementById("base-weekday");
 
-let extraDays = [];
+const STORAGE_KEY = "custom-days";
+
+function loadExtraDays() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? []; }
+  catch { return []; }
+}
+
+function saveExtraDays() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(extraDays));
+}
+
+let extraDays = loadExtraDays();
 
 // Set default date to today
 dateInput.value = todayString();
@@ -36,16 +47,7 @@ function render() {
     .join("");
 }
 
-function addCustomDay() {
-  const val = parseInt(customInput.value, 10);
-  if (!val || val < 1 || extraDays.includes(val) || PRESET_DAYS.includes(val)) {
-    customInput.select();
-    return;
-  }
-  extraDays.push(val);
-  customInput.value = "";
-
-  // Show tag
+function createTag(val) {
   const tag = document.createElement("span");
   tag.className = "custom-tag";
   tag.textContent = `${val}天`;
@@ -55,10 +57,23 @@ function addCustomDay() {
   remove.onclick = () => {
     extraDays = extraDays.filter((d) => d !== val);
     tag.remove();
+    saveExtraDays();
     render();
   };
   tag.appendChild(remove);
   customList.appendChild(tag);
+}
+
+function addCustomDay() {
+  const val = parseInt(customInput.value, 10);
+  if (!val || val < 1 || extraDays.includes(val) || PRESET_DAYS.includes(val)) {
+    customInput.select();
+    return;
+  }
+  extraDays.push(val);
+  customInput.value = "";
+  saveExtraDays();
+  createTag(val);
   render();
 }
 
@@ -68,4 +83,6 @@ customInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") addCustomDay();
 });
 
+// Restore persisted custom tags
+extraDays.forEach(createTag);
 render();
