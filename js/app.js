@@ -4,6 +4,7 @@ import {
   parseLocalDate,
   todayString,
   PRESET_DAYS,
+  WEEKDAYS_ZH,
 } from "./calculator.js";
 
 const dateInput = document.getElementById("base-date");
@@ -11,6 +12,7 @@ const resultsEl = document.getElementById("results");
 const customInput = document.getElementById("custom-days");
 const customBtn = document.getElementById("custom-add");
 const customList = document.getElementById("custom-list");
+const baseWeekday = document.getElementById("base-weekday");
 
 let extraDays = [];
 
@@ -19,6 +21,7 @@ dateInput.value = todayString();
 
 function render() {
   const base = parseLocalDate(dateInput.value);
+  baseWeekday.textContent = `（${WEEKDAYS_ZH[base.getDay()]}）`;
   const allDays = [...PRESET_DAYS, ...extraDays].sort((a, b) => a - b);
 
   resultsEl.innerHTML = allDays
