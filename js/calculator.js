@@ -26,4 +26,4 @@ export function todayString() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-export const PRESET_DAYS = [7, 14, 28, 56, 70, 84, 166];
+export const PRESET_DAYS = [7, 14, 28, 56, 70, 77, 84, 161];
